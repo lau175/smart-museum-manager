@@ -126,9 +126,9 @@ class ArtBot():
 		"""
 		self.bot.download_file(
 			msg['photo'][-1]['file_id'], 
-			"media/dwn_qr/file.png"
+			"media/file.png"
 		)
-		img = Image.open("media/dwn_qr/file.png")
+		img = Image.open("media/file.png")
 		qrcodes = decode(img)
 		print ("[{}] TBOT: QR code decoded: {}".format(
 			int(time.time()),
