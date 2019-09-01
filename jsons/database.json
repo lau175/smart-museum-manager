@@ -1,0 +1,35 @@
+{"database":[
+	{"id":"00",
+	 "author":"Antonio Canova",
+	 "title":"Psyche Revived by Cupid's Kiss",
+	 "year":"First version 1787-1793",
+	 "size":"155cm x 168cm",
+	 "description":"Having been recently awakened, Psyche reaches up towards her lover, Cupid, as he gently holds her by supporting her head and breast. Antonio Canova's fine technique in carving marble contrasts their realistic smooth skin with the surrounding elements. Loosely draped around Psyche’s lower body, a sheet further emphasizes the difference between the texture of skin and drapery. Rough texture provides the basis of the rock upon which the composition is placed supplementing the distinctions of elements. Fine curls and lines make up the hair and light feathery details create realistic wings upon the landing Cupid.",
+	 "thumbnail":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Psych%C3%A9.jpg/300px-Psych%C3%A9.jpg"
+	},
+	{"id":"01",
+	 "author":"Théodore Géricault",
+	 "title":"The Raft of the Medusa",
+	 "year":"1818–19",
+	 "size":"491cm x 716cm",
+	 "description":"The Raft of the Medusa portrays the moment when, after 13 days adrift on the raft, the remaining 15 survivors view a ship approaching from a distance. The painting is on a monumental scale of 491 x 716 cm, so that most of the figures rendered are life-sized and those in the foreground almost twice life-size, pushed close to the picture plane and crowding onto the viewer, who is drawn into the physical action as a participant. The makeshift raft is shown as barely seaworthy as it rides the deep waves, while the men are rendered as broken and in utter despair. One old man holds the corpse of his son at his knees; another tears his hair out in frustration and defeat. A number of bodies litter the foreground, waiting to be swept away by the surrounding waves.",
+	 "thumbnail":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/JEAN_LOUIS_TH%C3%89ODORE_G%C3%89RICAULT_-_La_Balsa_de_la_Medusa_%28Museo_del_Louvre%2C_1818-19%29.jpg/300px-JEAN_LOUIS_TH%C3%89ODORE_G%C3%89RICAULT_-_La_Balsa_de_la_Medusa_%28Museo_del_Louvre%2C_1818-19%29.jpg"
+	},
+	{"id":"02",
+	 "author":"Johannes Vermeer",
+	 "title":"The Little Street",
+	 "year":"1657–1658",
+	 "size":"54.3cm x 44cm",
+	 "description":"The painting is made in oil on canvas, and it is a relatively small painting, being 54.3 centimetres high by 44.0 centimetres wide.\nThe painting, showing a quiet street, depicts a typical aspect of the life in a Dutch Golden Age town. It is one of only three Vermeer paintings of views of Delft, the others being View of Delft and the now lost House Standing in Delft. This painting is considered to be an important work of the Dutch master.\nStraight angles alternate with the triangle of the house and of the sky giving the composition a certain vitality. The walls, stones and brickwork are painted in a thick colour, that it makes them almost palpable.",
+	 "thumbnail":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Johannes_Vermeer_-_Gezicht_op_huizen_in_Delft%2C_bekend_als_%27Het_straatje%27_-_Google_Art_Project.jpg/800px-Johannes_Vermeer_-_Gezicht_op_huizen_in_Delft%2C_bekend_als_%27Het_straatje%27_-_Google_Art_Project.jpg"
+	 },
+	 {"id":"03",
+	  "author":"Caspar David Friedrich",
+	  "title":"Wanderer above the Sea of Fog",
+	  "year":"c.1818",
+	  "size":"94.8cm x 74.8cm",
+	  "description":"The painting is composed of various elements from the Elbe Sandstone Mountains in Saxony and Bohemia, sketched in the field but in accordance with his usual practice, rearranged by Friedrich himself in the studio for the painting. In the background to the right is the Zirkelstein. The mountain in the background to the left could be either the Rosenberg or the Kaltenberg. The group of rocks in front of it represent the Gamrig near Rathen. The rocks on which the traveller stands are a group on the Kaiserkrone.",
+	  "thumbnail":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg/800px-Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg"
+	 }
+],"last_update": "2018-12-21 22:48"
+}
