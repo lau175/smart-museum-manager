@@ -21,6 +21,10 @@ BROKER	= "localhost"
 PORT	  = 1883
 CLIENT_ID = "mainboard"
 TS_DATA_UPDATE = "https://api.thingspeak.com/update?api_key=4M2QY10TRMJLXUX8"
+BOARD_ID = 1
+BOARD = "rpi"
+SENSOR1 = "temperature"
+SENSOR2 = "humidity"
 
 def mqttJsonLoad(payload):
 	"""
@@ -87,135 +91,149 @@ class Client():
 		on_subscribe: callback used to notify if subscription is done
 
 	"""
-		def __init__(self, name):
-				self.name = name
-				self.client = mqtt.Client(self.name)
-				self.client.on_message=self.on_message
-				self.client.on_connect=self.on_connect
-				self.client.on_subscribe=self.on_subscribe
-				self.client.on_disconnect=self.on_disconnect
-
-		def connect(self):
-			"""
-			activates a looping 'forever' connection with the mosquitto broker
-
-			"""
-				self.client.connect(BROKER)
-				self.client.loop_forever()
-
-		def subscribe(self, topic):
-			"""
-			subscribe the client to the specific topic, 
-			which name is passed as a parameter
-
-			Paramaters 
-			------------
-				topic : string
-					name of the selected topic
-			"""
-				self.topic=topic
-				self.client.subscribe(self.topic)
+	def __init__(self, name):
+		self.name = name
+		self.client = mqtt.Client(self.name)
+		self.client.on_message=self.on_message
+		self.client.on_connect=self.on_connect
+		self.client.on_subscribe=self.on_subscribe
+		self.client.on_disconnect=self.on_disconnect
 		
-		def publish(self, topic, msg):
-			"""
-			publishes message in a specific topic, both the message 
-			payload and the topic name are passed as parameters
+	def connect(self):
+		"""
+		activates a looping 'forever' connection with the mosquitto broker
 
-			Paramaters
-			------------
-				topic : string
-					name of the selected topic
-				msg : string/int/float/binary
-					message to be published in the topic
-			"""
-			self.topic = topic
-			self.msg = msg 
-			self.client.publish(self.topic, self.msg)
+		"""
+		self.printed_sub = False
+		self.client.connect(BROKER)
+		self.client.loop_forever()
 
-		def on_connect(self, client, userdata, flags, rc):
-			"""
-			callback that subscribe automatically, when conncetion starts, the client to topic 'measure/#'
-			and to the topic 'system'. prints out a connection confirm.
+	def subscribe(self, topic):
+		"""
+		subscribe the client to the specific topic, 
+		which name is passed as a parameter
 
-			Parameteres
-			-------------
-				client :
-					predefined phao mqtt library parameter
-				userdata :
-					predefined phao mqtt library parameter
-				flags : 
-					predefined phao mqtt library parameter
-				rc :
-					predefined phao mqtt library parameter
+		Paramaters 
+		------------
+			topic : string
+				name of the selected topic
+		"""
+		self.topic=topic
+		self.client.subscribe(self.topic)
+	
+	def publish(self, topic, msg):
+		"""
+		publishes message in a specific topic, both the message 
+		payload and the topic name are passed as parameters
 
-			"""
-				self.subscribe("measure/#")
-				self.subscribe("system")
-				print ("Connected")
+		Paramaters
+		------------
+			topic : string
+				name of the selected topic
+			msg : string/int/float/binary
+				message to be published in the topic
+		"""
+		self.topic = topic
+		self.msg = msg 
+		self.client.publish(self.topic, self.msg)
+		
 
-		def on_disconnect(self, client, userdata, rc):
-			"""
-			callback that disconnect the client from the broker, 	
-			only modification wrt the predefined one is that is printing out
-			a disconnection confirm.
+	def on_connect(self, client, userdata, flags, rc):
+		"""
+		callback that subscribe automatically, when conncetion starts, the client to topic 'measure/people'
+		and to the topic 'system'. prints out a connection confirm.
 
-			Parameteres
-			-------------
-				client :
-					predefined phao mqtt library parameter
-				userdata :
-					predefined phao mqtt library parameter
-				rc :
-					predefined phao mqtt library parameter
+		Parameteres
+		-------------
+			client :
+				predefined phao mqtt library parameter
+			userdata :
+				predefined phao mqtt library parameter
+			flags : 
+				predefined phao mqtt library parameter
+			rc :
+				predefined phao mqtt library parameter
 
-			"""
-				print ("Disconnected")
+		"""
 
-		def on_message(self, client, userdata, message):
-			"""
-			callback that when messages arrive on the topics calls the 'updatePendingJson' function
-			to update the pending json in the data queue , with the payload of the mqtt message.
-			it does this keeping attention to the right specific topic.
+		self.subscribe("system")
+		print ("[{}] Client connected".format(
+			int(time.time())
+		))
 
-			Parameteres
-			-------------
-				client :
-					predefined phao mqtt library parameters
-				userdata :
-					predefined phao mqtt library parameter
-				message :
-					mqtt message found in the topic
-			"""
-				self.message = message
-				mqtt_msg = mqttJsonLoad(self.message.payload)
-				
-				if self.message.topic == "measure/people":
-					print self.message
-					rpi.updatePendingJson("people_inside", mqtt_msg, "data")
-				elif self.message.topic == "measure/light_stat":
-					rpi.updatePendingJson("light_stat", mqtt_msg, "dev")
-				elif self.message.topic == "measure/heat_stat":
-					rpi.updatePendingJson("heat_stat", mqtt_msg, "dev")
-				elif self.message.topic == "system":
-					start()
+	def on_disconnect(self, client, userdata, rc):
+		"""
+		callback that disconnect the client from the broker, 	
+		only modification wrt the predefined one is that is printing out
+		a disconnection confirm.
 
-		def on_subscribe(self, client, userdata, mid, granted_qos):
-			"""
-			callback funtion (precautional) used to notify subscription
+		Parameteres
+		-------------
+			client :
+				predefined phao mqtt library parameter
+			userdata :
+				predefined phao mqtt library parameter
+			rc :
+				predefined phao mqtt library parameter
 
-			Parameteres
-			-------------
-				client :
-					predefined phao mqtt library parameters
-				userdata :
-					predefined phao mqtt library parameter
-				mid :
-					predefined phao mqtt library parameters
-				granted_qos :
-					predefined phao mqtt library parameters
+		"""
+		print ("[{}] Client disconnected".format(
+			int(time.time())
+		))
 
-			"""
-				print ("Subscribed")
+	def on_message(self, client, userdata, message):
+		"""
+		callback that when messages arrive on the topics calls the 'updatePendingJson' function
+		to update the pending json in the data queue , with the payload of the mqtt message.
+		it does this keeping attention to the right specific topic.
+
+		Parameteres
+		-------------
+			client :
+				predefined phao mqtt library parameters
+			userdata :
+				predefined phao mqtt library parameter
+			message :
+				mqtt message found in the topic
+		"""
+		self.message = message
+		mqtt_msg = mqttJsonLoad(self.message.payload)
+		
+		print ("[{}] Message arrived:\n\t\tTopic: {}\n\t\tMessage: {}".format(
+			int(time.time()), 
+			message.topic, 
+			message.payload
+		))
+		
+		if self.message.topic == "measure/people":
+			rpi.updatePendingJson("people_inside", mqtt_msg, "data")
+		elif self.message.topic == "system":
+			start()
+
+	def on_subscribe(self, client, userdata, mid, granted_qos):
+		"""
+		callback funtion (precautional) used to notify subscription
+
+		Parameteres
+		-------------
+			client :
+				predefined phao mqtt library parameters
+			userdata :
+				predefined phao mqtt library parameter
+			mid :
+				predefined phao mqtt library parameters
+			granted_qos :
+				predefined phao mqtt library parameters
+
+		"""
+		print ("[{}] Client subscribed to {}".format(
+			int(time.time()),
+			self.topic
+		))
+		#the following lines are here and not in on_connect() only for printing purpose
+		if not self.printed_sub:
+			self.printed_sub = True
+			self.subscribe("measure/people")
 
 class Raspberry():
 	"""
@@ -237,12 +255,15 @@ class Raspberry():
 		
 		pingEsp: callback used to disconnect client from the broker
 		
+		registerDevice: register the device on the Room Catalog
+		
 	"""
 	def __init__(self):
 		self.queue = []
 		self.dataQueue = []
 		# init the json queue
 		self.createJson("data")
+		self.registerDevice()
 
 	def createJson(self, channel):
 		"""
@@ -270,7 +291,10 @@ class Raspberry():
 		
 		if self.channel == "data":
 			self.dataQueue = self.queue
-		print "\tNew Json Created"
+		
+		print ("[{}] New json created".format(
+			int(time.time()),
+		))
 
 	def updatePendingJson(self, param, data, channel):
 		"""
@@ -320,10 +344,11 @@ class Raspberry():
 							+ "field1=" + str(temp_json["temperature"]) +"&"\
 							+ "field2=" + str(temp_json["humidity"]) +"&"\
 							+ "field3=" + str(temp_json["people_inside"])
-						
-						print req.get(self.body)
 							
-						print "Json message sent to ThingSpeak."
+						print ("[{}] Json message sent to ThingSpeak".format(
+							int(time.time()),
+						))
+						
 						index = self.queue.index(pending)
 						self.queue.pop(index)
 						if len(self.queue) == 0:
@@ -344,10 +369,12 @@ class Raspberry():
 				new_json = self.createJson(self.channel)
 				self.updatePendingJson(self.param, self.data, self.channel)
 		
-		print "Queue updated"
-		print "dataQueue:"
+		print ("[{}] Queue updated:".format(
+			int(time.time()),
+		))
+		
 		for item in self.dataQueue:
-			print item
+			print "\t{}".format(item)
 	
 	def fullJson(self, obj, channel):
 		"""
@@ -374,6 +401,20 @@ class Raspberry():
 				return True
 			else:
 				return False
+	
+	def registerDevice(self):
+		"""
+		register the device on the Room Catalog by sending a post request to it.
+		"""
+		r = req.post("http://localhost:9090/devices?id={}&sensors={}_{}&board={}".format(
+			BOARD_ID,
+			SENSOR1,
+			SENSOR2,
+			BOARD
+		))
+		print ("[{}] Device Registered on Room Catalog".format(
+			int(time.time()),
+		))
 				
 	def acquisition(self):
 		"""
@@ -385,8 +426,13 @@ class Raspberry():
 		while True:
 			#TODO replace the following two lines with the one below
 			self.temperature = random.randint(25,30)
-			self.humidity = random.randint(0,100)
+			self.humidity = random.randint(60,88)
 			#self.humidity, self.temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
+			print ("[{}] New measures from the Adafruit DHT:\n\tTemperature: {}C\n\tHumidity: {}%".format(
+				int(time.time()),
+				self.temperature,
+				self.humidity
+			))
 			mqttCli.publish("measure/temperature", mqttJsonDump(self.temperature))
 			mqttCli.publish("measure/humidity", mqttJsonDump(self.humidity))
 			
@@ -397,7 +443,11 @@ class Raspberry():
 			r = r.content
 			r = json.loads(r)
 			delta_t = r["interacquisition"]*60
-
+			
+			print ("[{}] Interacquisition time retrieved from the Room Catalog".format(
+				int(time.time()),
+			))
+			
 			time.sleep(delta_t)
 	
 	def pingEsp(self):
@@ -406,6 +456,9 @@ class Raspberry():
 		a ping to the ESP of arduinos to verify connection.
 		"""
 		while True:
+			print ("[{}] Keeping alive the ESP8266 connection".format(
+				int(time.time()),
+			))
 			mqttCli.publish("ping", mqttJsonDump('void'))
 			time.sleep(180)
 
@@ -415,6 +468,9 @@ def start():
 	acquisition thread
 	pinging thread
 	"""
+	print ("[{}] System started".format(
+		int(time.time()),
+	))
 	t_acquisition = threading.Thread(name="Data", target=rpi.acquisition)
 	t_ping = threading.Thread(name="ping", target=rpi.pingEsp)
 	t_acquisition.start()
