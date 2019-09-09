@@ -424,10 +424,7 @@ class Raspberry():
 		with the retrieved values updates the json data queue.
 		"""
 		while True:
-			#TODO replace the following two lines with the one below
-			self.temperature = random.randint(25,30)
-			self.humidity = random.randint(60,88)
-			#self.humidity, self.temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
+			self.humidity, self.temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
 			print ("[{}] New measures from the Adafruit DHT:\n\tTemperature: {}C\n\tHumidity: {}%".format(
 				int(time.time()),
 				self.temperature,
