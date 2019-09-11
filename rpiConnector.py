@@ -344,7 +344,9 @@ class Raspberry():
 							+ "field1=" + str(temp_json["temperature"]) +"&"\
 							+ "field2=" + str(temp_json["humidity"]) +"&"\
 							+ "field3=" + str(temp_json["people_inside"])
-							
+						
+						req.get(self.body)	
+						
 						print ("[{}] Json message sent to ThingSpeak".format(
 							int(time.time()),
 						))
