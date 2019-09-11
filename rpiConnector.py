@@ -457,7 +457,7 @@ class Raspberry():
 				int(time.time()),
 			))
 			mqttCli.publish("ping", mqttJsonDump('void'))
-			time.sleep(180)
+			time.sleep(30)
 
 def start():
 	"""
