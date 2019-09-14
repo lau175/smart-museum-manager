@@ -44,7 +44,7 @@ Replace ```xxx.xxx.xxx.xxx``` with the rpi IP address.</br>
 #### POST
 ```http://xxx.xxx.xxx.xxx:9090/th?type=FIELD&val=VALUE``` to update the thresholds</br>  
 FIELD is the threshold type (humidity, people, etc.)</br>
-VALUE is the new threshold value</br></br>
+VALUE is the new threshold value</br>
 ```http://xxx.xxx.xxx.xxx:9090/devices?id=ID&sensors=SENSOR1_SENSOR2&board=BOARD``` to register a new device</br>
 ID is the identification number of the device</br>
 SENSORx is the type of acquisition (temperature, humidity, etc.)</br>
