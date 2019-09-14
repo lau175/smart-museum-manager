@@ -83,8 +83,8 @@ system                        {"msg":"void"}                                    
 
 ping                          {"msg":"void"}                                            21/999
 ```
-             
-## Install mosquitto with websockets
+## Software             
+### Install mosquitto with websockets
 Mosquitto with websockets allow to use the mqtt protocol from internet browser. Firefox is recommended. The websockets port is 9001.
 
 #### Install the dependecies
@@ -147,13 +147,13 @@ $ reboot
 $ mosquitto -c /etc/mosquitto/mosquitto.conf
 ```
 
-## Install the zbar shared library
+### Install the zbar shared library
 ```
 $ apt-get install libzbar0
 pip install zbar
 ```
 
-## Install the Adafruit_DHT library
+### Install the Adafruit_DHT library
 Python 2:
 ```
 $ apt-get update
@@ -164,7 +164,7 @@ $ cd Adafruit_Python_DHT
 $ python setup.py install
 ```
 
-## Install the requirements
+### Install the requirements
 ```
 $ pip install -r requirements.txt
 ```
