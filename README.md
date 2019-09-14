@@ -170,7 +170,7 @@ $ pip install -r requirements.txt
 ```
 
 ## Usage
-* ___Mosquitto Broker___
+* ___MQTT Broker___
 Run ```$ mosquitto -c /etc/modquitto/mosquitto.conf -v```
 
 * ___Room Catalog___
