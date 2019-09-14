@@ -29,20 +29,30 @@ To make the ESP print on serial monitor, reset twice quickly.
 #### Adafruit DHT - Raspberry pinout
 ```
 DHT11 - Rpi
-VCC   - 3.3V
-OUT   - 17
-GND   - GND
+VCC   - 1
+OUT   - 11
+GND   - 6
 ```
 ## Room Catalog HTTP requests
-Two http requests are used: GET to read the room catalg, POST to update it. The requests return jsons.
+Three http requests are used: GET to read the room catalg, POST to update the thresholds and to register new devices, DELETE to remove a registered device. The GET requests return jsons.</br>
+Replace ```xxx.xxx.xxx.xxx``` with the rpi IP address.
 #### GET
-```192.168.1.164:9090/broker``` to read the broker IP and port</br>
-```192.168.1.164:9090/interacquisition``` to read the minutes between one acquisition and the next one</br>
-```192.168.1.164:9090/timetable``` to read museum timetable</br>
-```192.168.1.164:9090/th``` to read the thresholds</br>
-
+```http://xxx.xxx.xxx.xxx:9090/broker``` to read the broker IP and port</br>
+```http://xxx.xxx.xxx.xxx:9090/interacquisition``` to read the minutes between one acquisition and the next one</br>
+```http://xxx.xxx.xxx.xxx:9090/timetable``` to read museum timetable</br>
+```http://xxx.xxx.xxx.xxx:9090/th``` to read the thresholds</br>
 #### POST
-```192.168.1.164:9090/th``` to update the room catalog  
+```http://xxx.xxx.xxx.xxx:9090/th?type=FIELD&val=VALUE``` to update the thresholds</br>  
+FIELD is the threshold type (humidity, people, etc.)</br>
+VALUE is the new threshold value</br>
+```http://xxx.xxx.xxx.xxx:9090/devices?id=ID&sensors=SENSOR1_SENSOR2&board=BOARD``` to register a new device</br>
+ID is the identification number of the device</br>
+SENSORx is the type of acquisition (temperature, humidity, etc.)</br>
+BOARD can be arduino or rpi</br>
+#### DELETE
+```http://xxx.xxx.xxx.xxx:9090/devices?id=ID&board=BOARD``` to remove a registered device</br>
+ID is the identification number of the device</br>
+BOARD can be arduino or rpi</br>
 
 ## ESP8266 "protocol" for topics and messages
 ```
@@ -53,13 +63,15 @@ alert/people                  {"msg":critical_value}                            
 alert/light_down              {"msg":"void"}                                            4/999
 alert/closing                 {"msg":"void"}                                            5/999
 
-measure/light_stat            {"msg":1 if lights on, 0 if lights down}                  6/*msg*
-measure/heat_stat             {"msg":1 if heating on, 0 if heating down}                7/*msg*
+measure/light_stat            {"msg":1} if lights on                                    6/*msg*
+                              {"msg":0} if lights down 
+measure/heat_stat             {"msg":1} if heating on                                   7/*msg*
+                              {"msg":0} if heating down
 measure/temperature           {"msg":measured_value}                                    8/*value*
 measure/humidity              {"msg":measured_value}                                    9/*value*       
 measure/people                {"msg":measured_value}                                    10/*value*
-measure/light                 {"msg":measured_value}                                    11/*value*
-measure/people/detection      {"msg": "in" if a person enters, "out" if a person exits} 12/1 for "in", 12/0 for "out"
+measure/people/detection      {"msg": "in"}  if a person enters                         12/1
+                              {"msg": "out"} if a person exits                          12/0
 
 update                        {"msg" : "people"}                                        13/1
 update                        {"msg" : "timeout", for the timeout of lights}            14/1
@@ -72,7 +84,7 @@ trigger/heat                  {"msg":"void"}                                    
 
 system                        {"msg":"void"}                                            20/999
 
-ping						  {"msg":"void"}
+ping						                    {"msg":"void"}                                            21/999
 ```
              
 ## Install mosquitto with websockets
@@ -161,20 +173,29 @@ $ pip install -r requirements.txt
 ```
 
 ## Usage
+* ___Mosquitto Broker___
+Run ```$ mosquitto -c /etc/modquitto/mosquitto.conf -v```
 
-* ___Raspberry Pi software___
+* ___Room Catalog___
+Run ```$ python roomCatalog.py``` to exploit the room catalog file stored in the ```jsons/``` folder. See the Room Catalog documentation for the http requests related to it.
+
+* ___Raspberry Pi Connector___
 Manages the DHT sensor's data acquisition and the ThingSpeak requests to update the channels.
-Run ```$ python rpi.py```
+Run ```$ python rpiConnector.py```
+
+* ___Control System___
+Controls if the measured parameters exceed a threshold and periodically sends to the Raspberry Pi connector the average number of people inside the room. This value is determined by receiving a trigger from the Arduino board when a person enters or exits the room.
+Run ```$ python controlSystem.py```
 
 * ___Freeboard___
-Freeboard configuration to display the room parameters stored in an online dabase provided by ThingSpeak. The configuration is stored in the `freeboard/` folder. To access the Freeboard web page run ```$ python freeboard.py```, which implement the freeboard web service.
+Freeboard configuration to display the room parameters stored in an online dabase provided by ThingSpeak. The configuration is stored in the `lib/freeboard/` folder. To access the Freeboard web page run ```$ python freeboard.py```, which implement the freeboard web service.
 Open `http://192.168.1.80:8080` in your favorite browser.
 
 * ___Room manager Telegram bot___
-Run ```$ python bot\_museum.py``` to turn the bot on. It is reachable by searching `@smart_museum_bot` on Telegram
+Run ```$ python botMuseum.py``` to turn the bot on. It is reachable by searching `@smart_museum_bot` on Telegram
 
 * ___QR Artworks Bot___
-Run ```$ python bot\_artworks.py``` to turn the bot on. It is reachable by searching `@qr_temp_bot` on Telegram. The artworks qr codes are stored in the `qr_codes/` folder. The artworks database is stored in the `art_db/` folder
+Run ```$ python botArtworks.py``` to turn the bot on. It is reachable by searching `@qr_temp_bot` on Telegram. The artworks qr codes are stored in the `qr_codes/` folder. The artworks database is stored in the `art_db/` folder
 
 * __Starter__
 Run ```$ ./starter.sh``` to start synchronously the data acquisition.
