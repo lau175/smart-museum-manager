@@ -27,12 +27,14 @@ interacquistion_url = "http://" + catalog_IP + ":" + catalog_port + "/interacqui
 print("Interacquisition time obtained from Room Catalog")
 r = requests.get(interacquistion_url )
 obj = json.loads(r.text)
+# inter-acuisition time is multiplied by 60, since in the room catalog the value is in minutes
 interacquistion = obj["interacquisition"] * 60
 
 # Time controller: initialization, start and subscription to the proper topics
 time_controller = TimeControl("Time controller", broker_IP, broker_port, catalog_IP, catalog_port)
 time_controller.run()
 time_controller.myMqttClient.mySubscribe("measure/heat_stat")
+time_controller.myMqttClient.mySubscribe("measure/light_stat")
 
 # People controller: initialization, start and subscription to the proper topics
 people_controller = PeopleControl("People controller", broker_IP, broker_port, catalog_IP, catalog_port)
@@ -63,29 +65,33 @@ while 1:
     # the loop does nothing until synch is set to 0 and start working only if it becomes 1
     if people_controller.synch == 1:
         
-        # check if the museum switches from closed to open: if true it sends a MQTT message to turn on the ligth and the heating system if they are off
+        # check if the museum switches from closed to open, setting the status of the controllers as working
         if time_controller.checkOpening():
 
-            if time_controller.heatStatus == 0:
-                time_controller.myMqttClient.myPublish("trigger/heat", '{"msg" : "void"}')
             room_controller.setWorking(True)
             people_controller.setWorking(True)
 
-        # check if the museum switches from open to closed: if true it sends a MQTT message to turn off the ligth and the heating system if they are on
+        # check if the museum switches from open to closed: if true it sends a MQTT message to turn off the ligth and
+        # the heating system if they are on and setting the status of the controllers as not working
         elif time_controller.checkClosing():
+            
             if time_controller.heatStatus == 1:
                 time_controller.myMqttClient.myPublish("trigger/heat", '{"msg" : "void"}')
+            
+            if time_controller.lightStatus == 1:
+                time_controller.myMqttClient.myPublish("trigger/light", '{"msg" : "void"}')
+
             room_controller.setWorking(False)
             people_controller.setWorking(False)
 
         
         if time_controller.isOpened():
-            
-            
+           
             if room_controller.expiredTimeOut():
-                room_controller.setLightStatus(0)
-                room_controller.myMqttClient.myPublish("alert/light_down", '{"msg" : "void"}')
-                time_controller.myMqttClient.myPublish("trigger/light", '{"msg" : "void"}')
+                if room_controller.lightStatus == 1:
+                    room_controller.setLightStatus(0)
+                    room_controller.myMqttClient.myPublish("alert/light_down", '{"msg" : "void"}')
+                    room_controller.myMqttClient.myPublish("trigger/light", '{"msg" : "void"}')
 
             people_controller.updateArray()
 
@@ -93,7 +99,6 @@ while 1:
 
                 people_controller.myMqttClient.myPublish("measure/people", '{"msg": %d}' % round(people_controller.getMeanPeople()))
                 people_controller.clearArray()
-
 
         tmp += 1
 
