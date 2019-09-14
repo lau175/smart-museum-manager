@@ -1,6 +1,11 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+"""
+Author: Pietro Rando Mazzarino (s266498)
+Academic year: 2018/19
+"""
+
 import cherrypy
 import os
 import json
