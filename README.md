@@ -150,7 +150,7 @@ $ mosquitto -c /etc/mosquitto/mosquitto.conf
 ### Install the zbar shared library
 ```
 $ apt-get install libzbar0
-pip install zbar
+$ pip install zbar
 ```
 
 ### Install the Adafruit_DHT library
