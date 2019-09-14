@@ -3,7 +3,7 @@ IoT platform to provide services for a smart museum environment management.</br>
 The goal is to provide a smart control of museum environments in terms of humidity, temperature, and people flow plus some relevant information about exhibited works in a user-friendly interface for visitors.
 
 ## Hardware
-#### ESP8266 Pinout
+### ESP8266 Pinout
 ```
 ____________
 |   1   2   |   1 - RX  5 - GPIO2
@@ -13,7 +13,7 @@ ____________
 ____________     
 ```
 
-#### ESP8266 - Arduino connection
+### ESP8266 - Arduino connection
 ```
 ESP8266 - Arduino
  2    -    3.3V
@@ -28,14 +28,14 @@ ESP8266 - Arduino
 *** To flash the ESP link the GPI0 to GND, RST to GND. Unlink RST from GND. Wait the uploading time. Link the GPIO0 to 3.3V and Reset.
 To make the ESP print on serial monitor, reset twice quickly.
 
-#### Adafruit DHT - Raspberry pinout
+### Adafruit DHT - Raspberry pinout
 ```
 DHT11 - Rpi
 VCC   - 1
 OUT   - 11
 GND   - 6
 ```
-## Room Catalog HTTP requests
+### Room Catalog HTTP requests
 Three http requests are used: GET to read the room catalg, POST to update the thresholds and to register new devices, DELETE to remove a registered device. The GET requests return jsons.</br>
 Replace ```xxx.xxx.xxx.xxx``` with the rpi IP address.</br>
 #### GET
@@ -56,7 +56,7 @@ BOARD can be arduino or rpi</br></br>
 ID is the identification number of the device</br>
 BOARD can be arduino or rpi</br>
 
-## ESP8266 "protocol" for topics and messages
+### ESP8266 "protocol" for topics and messages
 ```
 Topic                         Message                                                   CODE/msg_CODE       
 alert/temperature             {"msg":critical_value}                                    1/*value*
