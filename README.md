@@ -38,11 +38,13 @@ Three http requests are used: GET to read the room catalg, POST to update the th
 Replace ```xxx.xxx.xxx.xxx``` with the rpi IP address.
 </br>
 #### GET
+</br>
 ```http://xxx.xxx.xxx.xxx:9090/broker``` to read the broker IP and port</br>
 ```http://xxx.xxx.xxx.xxx:9090/interacquisition``` to read the minutes between one acquisition and the next one</br>
 ```http://xxx.xxx.xxx.xxx:9090/timetable``` to read museum timetable</br>
 ```http://xxx.xxx.xxx.xxx:9090/th``` to read the thresholds</br>
 #### POST
+</br>
 ```http://xxx.xxx.xxx.xxx:9090/th?type=FIELD&val=VALUE``` to update the thresholds</br>  
 FIELD is the threshold type (humidity, people, etc.)</br>
 VALUE is the new threshold value</br>
@@ -53,6 +55,7 @@ SENSORx is the type of acquisition (temperature, humidity, etc.)</br>
 BOARD can be arduino or rpi</br>
 </br>
 #### DELETE
+</br>
 ```http://xxx.xxx.xxx.xxx:9090/devices?id=ID&board=BOARD``` to remove a registered device</br>
 ID is the identification number of the device</br>
 BOARD can be arduino or rpi</br>
@@ -75,12 +78,7 @@ measure/humidity              {"msg":measured_value}                            
 measure/people                {"msg":measured_value}                                    10/*value*
 measure/people/detection      {"msg": "in"}  if a person enters                         12/1
                               {"msg": "out"} if a person exits                          12/0
-
-update                        {"msg" : "people"}                                        13/1
-update                        {"msg" : "timeout", for the timeout of lights}            14/1
-update                        {"msg" : "max_temp"}                                      15/1
-update                        {"msg" : "min_temp"}                                      16/1
-
+                              
 trigger/th                    {"msg":"void"}                                            17/999
 trigger/light                 {"msg":"void"}                                            18/999  
 trigger/heat                  {"msg":"void"}                                            19/999
