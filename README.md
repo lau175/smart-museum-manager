@@ -1,5 +1,5 @@
 # Smart Museum Manager
-IoT platform to provide services for a smart museum environment management.<\br>
+IoT platform to provide services for a smart museum environment management.</br>
 The goal is to provide a smart control of museum environments in terms of humidity, temperature, and people flow plus some relevant information about exhibited works in a user-friendly interface for visitors.
 
 ## Hardware
