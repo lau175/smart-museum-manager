@@ -36,6 +36,7 @@ GND   - 6
 ## Room Catalog HTTP requests
 Three http requests are used: GET to read the room catalg, POST to update the thresholds and to register new devices, DELETE to remove a registered device. The GET requests return jsons.</br>
 Replace ```xxx.xxx.xxx.xxx``` with the rpi IP address.
+</br>
 #### GET
 ```http://xxx.xxx.xxx.xxx:9090/broker``` to read the broker IP and port</br>
 ```http://xxx.xxx.xxx.xxx:9090/interacquisition``` to read the minutes between one acquisition and the next one</br>
@@ -45,10 +46,12 @@ Replace ```xxx.xxx.xxx.xxx``` with the rpi IP address.
 ```http://xxx.xxx.xxx.xxx:9090/th?type=FIELD&val=VALUE``` to update the thresholds</br>  
 FIELD is the threshold type (humidity, people, etc.)</br>
 VALUE is the new threshold value</br>
+</br>
 ```http://xxx.xxx.xxx.xxx:9090/devices?id=ID&sensors=SENSOR1_SENSOR2&board=BOARD``` to register a new device</br>
 ID is the identification number of the device</br>
 SENSORx is the type of acquisition (temperature, humidity, etc.)</br>
 BOARD can be arduino or rpi</br>
+</br>
 #### DELETE
 ```http://xxx.xxx.xxx.xxx:9090/devices?id=ID&board=BOARD``` to remove a registered device</br>
 ID is the identification number of the device</br>
@@ -84,7 +87,7 @@ trigger/heat                  {"msg":"void"}                                    
 
 system                        {"msg":"void"}                                            20/999
 
-ping						                    {"msg":"void"}                                            21/999
+ping                          {"msg":"void"}                                            21/999
 ```
              
 ## Install mosquitto with websockets
