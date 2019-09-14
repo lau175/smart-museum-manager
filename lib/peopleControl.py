@@ -5,16 +5,14 @@ import requests
 import json
 import numpy as np
 from lib.MyMQTT import MyMQTT
-# todo check system topic
 
 class PeopleControl(object):
     """People threshold control algorithm: this algorithm acts as an MQTT subscriber to receive information about people
     detection (entering or leaving the room) from proximity sensors. The algorithm counts the number of people present
     in the room with information coming from proximity sensors and, if the threshold value (meant as maximum number of
     people allowed to stay in the monitored room and contained in the room catalogue) is reached, acts as an MQTT
-    publisher to send a message to museum staff in charge of room control to stop allowing people to enter the room
-    until the number of people inside is below the given threshold again. It also acts as an MQTT subscriber to verify
-    if the threshold value has been changed or not.
+    publisher to send a message to museum staff in charge of room control to stop allowing people to enter the room.
+    It also acts as an MQTT subscriber to verify if the threshold value has been changed or not.
     """
 
     def __init__(self, clientID, IP_broker, port_broker, IP_catalogue, port_catalogue):
@@ -25,7 +23,7 @@ class PeopleControl(object):
         self.port_catalogue = port_catalogue
         # threshold of maximum number of people allowed in the room
         self.people_threshold = int(self.getThreshold())
-        # counter of present peoplein the room
+        # counter of present people in the room
         self.present_people = 0
         # status of th e museum: True if open, False if closed
         self.status = False
@@ -46,11 +44,15 @@ class PeopleControl(object):
 
     def notify(self, topic, msg):
         
-        print("people controller received '%s' under topic '%s'" % (msg, topic))
+        # print("%s received '%s' under topic '%s'" % (self.clientID, msg, topic))
 
         if topic == 'system':
             msg = str.replace(msg, "'", '"')
-            if msg == "void":
+            try:
+                json_mex = json.loads(msg)
+            except:
+                print "error json format"
+            if json_mex["msg"] == "void":
                 self.synch = 1
 
         if topic == "measure/people/detection":
@@ -82,7 +84,7 @@ class PeopleControl(object):
         try:
             threshold_URL = "http://" + self.IP_catalogue + ":" + self.port_catalogue + "/th"
             r = requests.get(threshold_URL)
-            print("Maximum number of people allowed obtained from Room Catalog")
+            print("Maximum number of people allowed obtained from Room Catalog by " + self.clientID)
             threshold = r.text
 
             obj = json.loads(threshold)
@@ -100,7 +102,7 @@ class PeopleControl(object):
         an MQTT alert message is published """
        
         self.present_people = self.present_people + 1
-        print self.present_people
+
         if self.exceededThreshold():
             self.myMqttClient.myPublish("alert/people", '{"msg" : %d}'%self.present_people)
 

@@ -10,7 +10,7 @@ from lib.MyMQTT import MyMQTT
 
 class TimeControl(object):
     """Control strategy that makes heating and lighting system depending on museum timetable.
-    It works as an MQTT publisher to switch on and off the system according to the timing information coming via
+    It works as an MQTT publisher to switch on and off the cooling system according to the timing information coming via
     REST web services from the room catalogue.
     """
 
@@ -23,6 +23,7 @@ class TimeControl(object):
         self.getTimeTables()
         self.checkStatus()
         self.heatStatus = 0
+        self.lightStatus = 0
 
     def run(self):
     
@@ -36,13 +37,19 @@ class TimeControl(object):
 
     def notify(self, topic, msg):
 
-        print("received '%s' under topic '%s'" % (msg, topic))
+        # print("%s received '%s' under topic '%s'" % (self.clientID, msg, topic))
 
         if topic == "measure/heat_stat":
             msg = str.replace(msg, "'", '"')
             json_mex = json.loads(msg)
             value = json_mex["msg"]
             self.heatStatus = int(value)
+            
+        if topic == "measure/light_stat":
+            msg = str.replace(msg, "'", '"')
+            json_mex = json.loads(msg)
+            value = json_mex["msg"]
+            self.lightStatus = int(value)
 
     def getTimeTables(self):
         """through requests library the function gets the opening and closing time of the museum"""
@@ -50,7 +57,7 @@ class TimeControl(object):
         try:
             timetable_URL = "http://" + self.IP_catalogue + ":" + self.port_catalogue + "/timetable"
             r = requests.get(timetable_URL)
-            print("Museum timetable obtained from Room Catalog")
+            print("Museum timetable obtained from Room Catalog by " + self.clientID)
             timetable_txt = r.text
 
             obj = json.loads(timetable_txt)

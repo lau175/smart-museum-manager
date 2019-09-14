@@ -29,10 +29,13 @@ class RoomControl(object):
         self.maxHumidity = self.getMaxHumidityThreshold()
         self.timeOut = self.getTimeOut()
         self.present_people = 0
-        self.timeEmpty = time.time()
         self.status = False
         self.lightStatus = 0
         self.coolStatus = 0
+        # default starting values that are overwritten as soon as the systems starts, since temperature and humidity
+        # are received
+        self.currentTemperature = 20
+        self.currentHumidity = 0
 
     def run(self):
         
@@ -46,7 +49,7 @@ class RoomControl(object):
 
     def notify(self, topic, msg):
        
-        print("roomControl received '%s' under topic '%s'" % (msg, topic))
+        # print("%s received '%s' under topic '%s'" % (self.clientID, msg, topic))
 
         if topic == "trigger/th":
             #update of thresholds contained in the room catalog
@@ -105,7 +108,8 @@ class RoomControl(object):
 
     def setWorking(self, state):
         """method to set the status of the museum, thta can be closed or open"""
-        
+        if state:
+            self.timeEmpty = time.time()
         self.status = state
 
     def getMaxTemperatureThreshold(self):
@@ -113,7 +117,7 @@ class RoomControl(object):
         try:
             threshold_URL = "http://" + self.IP_catalogue + ":" + self.port_catalogue + "/th"
             r = requests.get(threshold_URL)
-            print("Maximum temperature allowed obtained from Room Catalog")
+            print("Maximum temperature allowed obtained from Room Catalog by " + self.clientID)
             threshold = r.text
 
             obj = json.loads(threshold)
@@ -132,7 +136,7 @@ class RoomControl(object):
         try:
             threshold_URL = "http://" + self.IP_catalogue + ":" + self.port_catalogue + "/th"
             r = requests.get(threshold_URL)
-            print("Minimum humidity allowed obtained from Room Catalog")
+            print("Maximum humidity allowed obtained from Room Catalog by " + self.clientID)
             threshold = r.text
 
             obj = json.loads(threshold)
@@ -152,7 +156,7 @@ class RoomControl(object):
         try:
             threshold_URL = "http://" + self.IP_catalogue + ":" + self.port_catalogue + "/th"
             r = requests.get(threshold_URL)
-            print("Minimum temperature allowed obtained from Room Catalog")
+            print("Minimum temperature allowed obtained from Room Catalog by " + self.clientID)
 
             threshold = r.text
 
@@ -174,7 +178,7 @@ class RoomControl(object):
         try:
             threshold_URL = "http://" + self.IP_catalogue + ":" + self.port_catalogue + "/th"
             r = requests.get(threshold_URL)
-            print("Light timeout obtained from Room Catalog")
+            print("Light timeout obtained from Room Catalog by " + self.clientID)
             threshold = r.text
 
             obj = json.loads(threshold)
@@ -240,6 +244,7 @@ class RoomControl(object):
 
     def isHumidityValid(self):
         """method that checks if current humidity is valid: if it is, the method returns True, False otherwise"""
+
         if self.currentHumidity < self.maxHumidity:
             return True
         else:
@@ -262,6 +267,7 @@ class RoomControl(object):
 
     def controlHeating(self):
         """method that, basing on the current temperature or humidity, sends alerts or complement tha status of the cooling system"""
+
         if self.status:
             if not(self.isTemperatureValid()):
                 self.myMqttClient.myPublish("alert/temperature", '{"msg" : %d}'% self.currentTemperature)
@@ -272,12 +278,3 @@ class RoomControl(object):
             if not(self.isHumidityValid()):
                 self.myMqttClient.myPublish("alert/humidity", '{"msg" : %d}'% self.currentHumidity)
 
-    def getLightStatus(self):
-        """method that returns the status of the light"""
-        
-        return int(self.lightStatus)
-
-    def getCurrentTemperature(self):
-        """method that returns the current temperature"""
-        
-        return  int(self.currentTemperature)

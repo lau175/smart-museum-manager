@@ -22,25 +22,25 @@ class MyMQTT:
         self._paho_mqtt.on_message = self.myOnMessageReceived
 
     def myOnConnect(self, paho_mqtt, userdata, flags, rc):
-        # todo devo scrivere "with result"?
-        print("MQTT: '%s' connected to %s with result code: %d" % (clientID, self.broker, rc))
+
+        print("MQTT: '%s' connected to %s with result code: %d" % (self.clientID, self.broker, rc))
 
     def myOnMessageReceived(self, paho_mqtt, userdata, msg):
         # A new message is received
-        print ("MQTT: message received by " + clientID)
+        print ("MQTT: message received by " + self.clientID)
         print (msg.topic)
         print (msg.payload)
         self.notifier.notify(msg.topic, msg.payload)
 
     def myPublish(self, topic, msg):
         
-        print("MQTT: '%s' published message '%s' with topic '%s'" % (clientID, msg, topic))
+        print("MQTT: '%s' published message '%s' with topic '%s'" % (self.clientID, msg, topic))
         # publish a message with a certain topic
         self._paho_mqtt.publish(topic, msg, 2)
 
     def mySubscribe(self, topic):
                 
-        print("MQTT: '%s' subscribed to  %s" % (clientID, topic))
+        print("MQTT: '%s' subscribed to %s" % (self.clientID, topic))
         # subscribe for a topic
         self._paho_mqtt.subscribe(topic, 2)
 
