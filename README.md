@@ -171,7 +171,7 @@ $ pip install -r requirements.txt
 
 ## Usage
 * ___MQTT Broker___
-Run ```$ mosquitto -c /etc/modquitto/mosquitto.conf -v```
+Run ```$ mosquitto -c /etc/mosquitto/mosquitto.conf -v```
 
 * ___Room Catalog___
 Run ```$ python roomCatalog.py``` to exploit the room catalog file stored in the ```jsons/``` folder. See the Room Catalog documentation for the http requests related to it.
