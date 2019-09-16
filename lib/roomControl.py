@@ -196,9 +196,8 @@ class RoomControl(object):
         """method that returns true if the time past from the moment in which the room becomes empty exceeds the timeout,
          false otherwise"""
          
-        if self.present_people == 0 and self.getLightStatus() == 1:
-            if (time.time() - self.timeEmpty) > int(self.timeOut):
-                return True
+        if self.present_people == 0 and (time.time() - self.timeEmpty) > int(self.timeOut):
+            return True
         else:
             return False
 
