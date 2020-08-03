@@ -203,4 +203,4 @@ Run ```$ python botArtworks.py``` to turn the bot on. It is reachable by searchi
 Run ```$ ./starter.sh``` to start synchronously the data acquisition.
 
 ## 
-(c) 2019, Giuseppe Di Giacomo, Luca Gioacchini, Pietro Rando Mazzarino, Luca Tomaino
+(c) 2019, Luca Gioacchini, Luca Tomaino, Giuseppe Di Giacomo, Pietro Rando Mazzarino
