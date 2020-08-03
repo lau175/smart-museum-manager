@@ -1,4 +1,8 @@
+<p align="right">
+<img src="fig/polito.png" alt="Logo" width="80" height="80">
+</p>
 # Smart Museum Manager
+This work is part of the project for the Programming for IoT Application course at Politecnico di Torino.  
 IoT platform to provide services for a smart museum environment management.</br>
 The goal is to provide a smart control of museum environments in terms of humidity, temperature, and people flow plus some relevant information about exhibited works in a user-friendly interface for visitors.
 
